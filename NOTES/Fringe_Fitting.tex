@@ -1,0 +1,206 @@
+\documentclass{tufte-handout}
+
+\title{Fringe Fitting}
+
+\author[Anna~M.~M.~Scaife]{Anna~M.~M.~Scaife}
+
+%\date{28 March 2010} % without \date command, current date is supplied
+
+%\geometry{showframe} % display margins for debugging page layout
+
+\usepackage{graphicx} % allow embedded images
+  \setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+  \graphicspath{{graphics/}} % set of paths to search for images
+\usepackage{amsmath}  % extended mathematics
+\usepackage{booktabs} % book-quality tables
+\usepackage{units}    % non-stacked fractions and better unit spacing
+\usepackage{multicol} % multiple column layout facilities
+\usepackage{lipsum}   % filler text
+\usepackage{fancyvrb} % extended verbatim environments
+\usepackage{framed}   % add frames around paragraphs
+  \fvset{fontsize=\normalsize}% default font size for fancy-verbatim environments
+
+
+% Standardize command font styles and environments
+\newcommand{\doccmd}[1]{\texttt{\textbackslash#1}}% command name -- adds backslash automatically
+\newcommand{\docopt}[1]{\ensuremath{\langle}\textrm{\textit{#1}}\ensuremath{\rangle}}% optional command argument
+\newcommand{\docarg}[1]{\textrm{\textit{#1}}}% (required) command argument
+\newcommand{\docenv}[1]{\textsf{#1}}% environment name
+\newcommand{\docpkg}[1]{\texttt{#1}}% package name
+\newcommand{\doccls}[1]{\texttt{#1}}% document class name
+\newcommand{\docclsopt}[1]{\texttt{#1}}% document class option name
+\newenvironment{docspec}{\begin{quote}\noindent}{\end{quote}}% command specification environment
+
+\begin{document}
+
+\maketitle% this prints the handout title, author, and date
+
+\begin{abstract}
+\noindent
+This note describes how fringe fitting works for VLBI calibration.
+\end{abstract}
+
+%\printclassoptions
+
+\section{Context}
+\label{sec:context}
+
+In very long baseline interferometry the phase is extremely important. The phase of a complex visibility will be corrupted by three major things: (1) the instrument, (2) the troposphere, and (3) the ionosphere. For shorter baseline interferometers the tropospheric and ionospheric contributions will be much less significant because the individual antennas for each baseline will typically stay within a single isoplanatic patch, so standard phase calibration just accounts for the instrumental contribution. 
+
+For VLBI, the tropospheric and potentially the ionospheric contributions must also be accounted for as the antennas are spaced so widely that there will be a significant path difference between constitutent antennas in a baseline.
+
+The total measured phase will be given by
+%
+\begin{equation}
+\label{eq:phase}
+\phi(\nu, t) = \phi_0(t) + 2\pi\nu T(t) + 2\pi \nu K(t)/\nu^2~~{\rm deg},
+\end{equation}
+%
+where $\phi_0(t)$ is frequency independent instrumental phase introduced by the electronics in the receivers, $T(t)$ is the tropospheric delay which is frequency independent and has units of time, $K(t)/\nu^2$ is the ionospheric delay and has units of time.
+
+Typical values for T and K are ... The tropospheric term is referred to as the \emph{non-dispersive} delay and the ionospheric term is referred to as the \emph{dispersive} delay.
+
+
+
+\section{Non-dispersive Delays}
+\label{sec:non-dsipersive}
+
+For VLBI observations at higher frequencies (i.e. $\nu > 1$\,GHz) the dispersive delay can be neglected and the phase can be approximated as:
+%
+\begin{equation}
+\phi(\nu,t) = \phi_0(t) + 2\pi\nu T(t).
+\end{equation}
+%
+In this case the phase has a linear relationship to frequency. If sufficient frequency information is present, a value of $T_i \equiv T(t=t_i)$ can be calculated for each timestep based on the linear frequency dependence of the tropospheric term.
+
+The simplest way to find the value of $T_i$ for a given time step is to take the Fourier Transform of the (normalised) visibility data $V_i(\nu) = {\rm e}^{i\phi(\nu,t=t_i)}$ for a baseline with respect to frequency. This will return the \emph{delay function},  $\tilde{V}_i(\tau)$.
+%
+
+If there is a purely linear relationship in the phase this delay function should be single valued. 
+
+\subsection{Derivation of delay function for non-dispersive delay}
+
+In the non-dispersive case, for a single timestep,
+%
+\begin{equation}
+\phi(\nu) = \phi_0 + 2\pi\nu T_i~~,
+\end{equation}
+%
+which we can re-write as
+%
+\begin{equation}
+\phi(\nu) = \phi_{\rm ref} + (\nu - \nu_{\rm ref}) \left. \frac{\partial \phi}{\partial \nu} \right|_{\rm ref}~~,
+\end{equation}
+%
+where $\left. {\partial \phi}/{\partial \nu} \right|_{\rm ref} = 2\pi T_i$. From now on I'll use the notation
+%
+\begin{equation}
+\dot{\phi}_{\rm ref} = \left. \frac{\partial \phi}{\partial \nu} \right|_{\rm ref}.
+\end{equation}
+% 
+Cotton \& Schwab\footnote{\url{http://adsabs.harvard.edu/full/1983AJ.....88..688S}} refer to this quanitity as the \emph{delay}, and the derivative with respect to time as the \emph{rate}.
+
+\vskip .1in
+\noindent
+The (normalised) visibility will then be
+%
+\begin{eqnarray}
+\nonumber V_i(\nu) &=& {\rm e}^{i \phi(\nu)} \\
+\nonumber &=& {\rm e}^{i[\phi_0 + 2\pi\nu T_i]}  \\
+\label{eq:vis} &=& {\rm e}^{i[\phi_{\rm ref} + (\nu - \nu_{\rm ref}) \dot{\phi}_{\rm ref}]}
+\end{eqnarray}
+
+\marginnote{
+\begin{framed}
+\begin{center}
+\textbf{Representation of \\the $\delta$-function}
+\end{center}
+\vskip .1in
+
+From the Cauchy equation,
+%
+\begin{equation}
+\nonumber \delta(x-a) = \frac{1}{2\pi}\int_{-\infty}^{\infty}{{\rm e}^{ip(x-a)}{\rm d}p}.
+\end{equation}
+\end{framed}
+}
+
+\noindent
+The Fourier Transform (FT) of the visibility will be:
+%
+\begin{eqnarray}
+\nonumber V_i(\tau) &=& \int{V_i(\nu){\rm e}^{-2\pi i\nu\tau} {\rm d}\nu} \\
+\nonumber &=& \int{{\rm e}^{i[\phi_{\rm ref} + (\nu - \nu_{\rm ref}) \dot{\phi}_{\rm ref}]}{\rm e}^{i\nu\tau} {\rm d}\nu } \\
+\nonumber &=& {\rm e}^{i[\phi_{\rm ref} - \nu_{\rm ref} \dot{\phi}_{\rm ref}]} \int{{\rm e}^{i\nu \dot{\phi}_{\rm ref}}{\rm e}^{-2\pi i\nu\tau} {\rm d}\nu } \\
+\nonumber &=& {\rm e}^{i[\phi_{\rm ref} - \nu_{\rm ref} \dot{\phi}_{\rm ref}]} \int{{\rm e}^{i\nu \dot{\phi}_{\rm ref} - 2\pi i\nu\tau} {\rm d}\nu } \\
+ &=& {\rm e}^{i[\phi_{\rm ref} - \nu_{\rm ref} \dot{\phi}_{\rm ref}]} \delta \left( \dot{\phi}_{\rm ref} - 2\pi \tau \right), 
+\end{eqnarray}
+%
+which means that the delay function $V_i(\tau)$ should be a $\delta$-function at the position $2\pi\tau = \dot{\phi}_{\rm ref}$, but it will be complex valued because the multiplicative factor is a complex exponential. To make it real valued we take the amplitude of the delay function, $q(\tau) = V_i(\tau)V_i(\tau)^{\ast}$, which simply gives $q(\tau) = \delta \left( \dot{\phi}_{\rm ref} - 2\pi \tau \right)$. This is known as the \emph{power spectrum} of the delay function.
+
+\subsection{The envelope function}
+
+In the previous subsection we showed that in the case of a non-dispersive (i.e. linear) phase delay, the Fourier Transform of the visibility data with respect to frequency gives a delay function which is single valued ($\delta$-function) at $2\pi\tau = \dot{\phi}_{\rm ref}$. From this we can calculate $T_i$ since $\dot{\phi}_{\rm ref} = 2\pi T_i$. 
+
+However, in the previous subsection we have assumed that we can integrate over all frequencies, $\int_{-\infty}^{\infty}{{\rm d}\nu}$. In reality our data will be measured over a finite bandwidth, $\Delta \nu = (\nu_{\rm min},\nu_{\rm max})$. This limited bandwidth is the same as multiplying our visibility data $V_i(\nu)$ by a top hat weight function, $w(\nu)$:
+%
+\begin{align*}
+  w(\nu) & =
+  \begin{cases}
+   1 & \nu_{\rm min} \leq \nu \leq \nu_{\rm max}\\
+   0 & {\rm elsewhere}.
+  \end{cases}
+ \end{align*}
+
+The convolution theorem tells us that if we multiply two functions and Fourier Transform the product then the output will be the convolution of the Fourier Transforms of the two individual functions. Consequently, the finite bandwidth of our observations means that the $\delta$-function delay function will be convolved with the Fourier Transform of the weight function. The Fourier Transform of a top hat is a sinc function and so the power spectrum of the delay function will be a sinc-squared function.
+
+\section{Dispersive delays}
+
+For VLBI observations at lower frequencies (i.e. $\nu \ll 1$\,GHz) we cannot ignore the ionospheric (dispersive) non-linear phase term. In this case we are required to consider the phase to be:
+%
+\begin{equation}
+\phi(\nu, t) = \phi_0(t) + 2\pi\nu T(t) + 2\pi \nu K(t)/\nu^2~~{\rm deg},
+\end{equation}
+% 
+and to include the second Taylor term in any expansion because there will be curvature in the phase as a function of frequency.
+
+\noindent
+In this case we can write,
+%
+\begin{eqnarray}
+\nonumber \phi(\nu) &=& \phi_{\rm ref} + (\nu - \nu_{\rm ref}) \left. \frac{\partial \phi}{\partial \nu} \right|_{\rm ref} + (\nu - \nu_{\rm ref})^2 \left. \frac{\partial^2 \phi}{\partial \nu^2} \right|_{\rm ref} \\
+\nonumber &=& \phi_{\rm ref} + (\nu - \nu_{\rm ref}) \dot{\phi}_{\rm ref} + \frac{1}{2}(\nu - \nu_{\rm ref})^2 \ddot{\phi}_{\rm ref}
+\end{eqnarray}
+%
+where,
+%
+\begin{equation}
+T_i = \frac{1}{2\pi}\left[\dot{\phi}_{\rm ref} + \frac{1}{2}(\nu - \nu_{\rm ref})\ddot{\phi}_{\rm ref}\right]
+\end{equation}
+%
+and
+%
+\begin{equation}
+K_i = \frac{1}{4\pi}(\nu - \nu_{\rm ref})^3\ddot{\phi}_{\rm ref}.
+\end{equation}
+
+\noindent
+In this case the visibility will be written as,
+%
+\begin{eqnarray}
+\nonumber V_i(\nu) &=& {\rm e}^{i \phi(\nu)} \\
+\nonumber  &=& {\rm e}^{i[\phi_{\rm ref} + (\nu - \nu_{\rm ref}) \dot{\phi}_{\rm ref} + \frac{1}{2}(\nu - \nu_{\rm ref})^2\ddot{\phi}_{\rm ref}]}
+\end{eqnarray}
+%
+This is equivalent to the original expression for the visibility, Eq.~\ref{eq:vis}, being multiplied by the term,
+%
+\begin{equation}
+\nonumber {\rm e}^{i[\frac{1}{2}(\nu - \nu_{\rm ref})^2\ddot{\phi}_{\rm ref}]}.
+\end{equation}
+%
+This \emph{multiplication} in frequency space results in a \emph{convolution} in delay space. This extra convolution will spread out the peak in the delay function and reduce the height of the peak, i.e. cause decoherence.
+
+
+
+
+\end{document}
