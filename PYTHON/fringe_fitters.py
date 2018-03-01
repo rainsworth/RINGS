@@ -136,7 +136,7 @@ def GradPhi_1D(freq,phase):
 
 # -------------------------------------------------------------------------
 
-def LLS_1D(freq,real,imag):
+def LLS_1D_nondisp(freq,real,imag):
 
 	"""
 	Calculates a linear least squares fit 
