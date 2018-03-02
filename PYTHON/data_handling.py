@@ -1,7 +1,5 @@
 import numpy as np
 import io,json
-from decimal import Decimal
-
 
 # ---------------------------------------------------------------------------------------------------
 
@@ -129,3 +127,37 @@ def get_emerlin_freqs(spw):
 		freqs = np.arange(spw0, spw0 + 128., 1.)
 
 	return freqs
+
+
+# ---------------------------------------------------------------------------------------------------
+
+def get_data_rr(dataset):
+
+	"""
+	Function to compress full dataset with cross-polarizations listed
+	separately into a single polarization dataset
+
+	:param dataset: full dataset
+	:return: compressed dataset
+	"""
+
+	data_rr = [entry for entry in dataset if entry['polarization']=='0']
+
+	return data_rr
+
+
+# ---------------------------------------------------------------------------------------------------
+
+def get_data_ll(dataset):
+
+	"""
+	Function to compress full dataset with cross-polarizations listed
+	separately into a single polarization dataset
+
+	:param dataset: full dataset
+	:return: compressed dataset
+	"""
+
+	data_ll = [entry for entry in dataset if entry['polarization']=='3']
+
+	return data_ll
