@@ -1,7 +1,5 @@
 import numpy as np
 import io,json
-from decimal import Decimal
-
 
 # ---------------------------------------------------------------------------------------------------
 
@@ -15,7 +13,7 @@ def read_file(inname):
 	"""
 
 	input_file  = file(inname, "r")
-	dataset = json.loads(input_file.read().decode("utf-8"), parse_int=Decimal, parse_float=Decimal)
+	dataset = json.loads(input_file.read().decode("utf-8"))
 
 	return dataset
 
@@ -45,7 +43,7 @@ def get_baseline_data(ae1,ae2,spw,dataset):
 			flag = np.array(entry['flags']).astype(float)
 
 			# calculate the phase 
-			phase = np.arctan2(real,imag)
+			phase = np.arctan2(imag,real)
 			
 			try:
 				real_ab = np.vstack((real_ab,real))
@@ -69,6 +67,7 @@ def get_baseline_data(ae1,ae2,spw,dataset):
 # ---------------------------------------------------------------------------------------------------
 
 def get_baseline_data_allspw(ae1, ae2, dataset):
+
 	"""
 	This function extract data for a single baseline from the full dataset
 	for all spectral windows
@@ -128,3 +127,37 @@ def get_emerlin_freqs(spw):
 		freqs = np.arange(spw0, spw0 + 128., 1.)
 
 	return freqs
+
+
+# ---------------------------------------------------------------------------------------------------
+
+def get_data_rr(dataset):
+
+	"""
+	Function to compress full dataset with cross-polarizations listed
+	separately into a single polarization dataset
+
+	:param dataset: full dataset
+	:return: compressed dataset
+	"""
+
+	data_rr = [entry for entry in dataset if entry['polarization']=='0']
+
+	return data_rr
+
+
+# ---------------------------------------------------------------------------------------------------
+
+def get_data_ll(dataset):
+
+	"""
+	Function to compress full dataset with cross-polarizations listed
+	separately into a single polarization dataset
+
+	:param dataset: full dataset
+	:return: compressed dataset
+	"""
+
+	data_ll = [entry for entry in dataset if entry['polarization']=='3']
+
+	return data_ll
