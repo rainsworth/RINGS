@@ -15,7 +15,7 @@ def read_file(inname):
 	"""
 
 	input_file  = file(inname, "r")
-	dataset = json.loads(input_file.read().decode("utf-8"), parse_int=Decimal, parse_float=Decimal)
+	dataset = json.loads(input_file.read().decode("utf-8"))
 
 	return dataset
 
