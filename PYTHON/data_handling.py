@@ -45,7 +45,7 @@ def get_baseline_data(ae1,ae2,spw,dataset):
 			flag = np.array(entry['flags']).astype(float)
 
 			# calculate the phase 
-			phase = np.arctan2(real,imag)
+			phase = np.arctan2(imag,real)
 			
 			try:
 				real_ab = np.vstack((real_ab,real))
@@ -69,6 +69,7 @@ def get_baseline_data(ae1,ae2,spw,dataset):
 # ---------------------------------------------------------------------------------------------------
 
 def get_baseline_data_allspw(ae1, ae2, dataset):
+
 	"""
 	This function extract data for a single baseline from the full dataset
 	for all spectral windows
