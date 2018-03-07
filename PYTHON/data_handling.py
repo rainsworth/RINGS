@@ -80,24 +80,21 @@ def get_baseline_data_allspw(ae1, ae2, dataset):
 
 	for spw in range(0, 4):
 		time, real, imag, phase, flags = get_baseline_data(ae1, ae2, spw, dataset)
-		freq = get_emerlin_freqs(spw)
 
 		if spw==0:
-			freq_ab = freq
 			time_ab = time
 			real_ab = real
 			imag_ab = imag
 			phase_ab = phase
 			flags_ab = flags
 		else:
-			freq_ab = np.hstack((freq_ab, freq))
 			real_ab = np.hstack((real_ab, real))
 			imag_ab = np.hstack((imag_ab, imag))
 			phase_ab = np.hstack((phase_ab, phase))
 			flags_ab = np.hstack((flags_ab, flags))
 
 
-	return freq_ab, time_ab, real_ab, imag_ab, phase_ab, flags_ab
+	return time_ab, real_ab, imag_ab, phase_ab, flags_ab
 
 
 
@@ -125,6 +122,32 @@ def get_emerlin_freqs(spw):
 	elif (spw==3):
 		spw0 = 5200.500  # MHz
 		freqs = np.arange(spw0, spw0 + 128., 1.)
+	elif (spw=='all'):
+		spw0 = 4816.500  # MHz
+		freqs = np.arange(spw0, spw0 + 512., 1.)
+
+	return freqs
+
+
+# ---------------------------------------------------------------------------------------------------
+
+def get_sim1_freqs(spw):
+
+	"""
+	Function to return frequency axis information for simulated data
+	for a specific spectral window
+
+	:param spw: spectral window
+	:return: frequency array
+	"""
+
+	if (spw==0):
+		spw0 = 43000.000  # MHz
+		freqs = np.arange(spw0, spw0 + 2000., 31.250)
+	else:
+		print "That SPW doesn't exist - I'm giving you spw='0' instead"
+		spw0 = 43000.000  # MHz
+		freqs = np.arange(spw0, spw0 + 2000., 31.250)
 
 	return freqs
 

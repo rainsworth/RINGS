@@ -11,7 +11,8 @@ dataset = get_data_rr(dataset)
 
 # get data for baseline 03:
 ae1 = 0; ae2 = 3
-freq_03, time_03, real_03, imag_03, phase_03, flags_03 = get_baseline_data_allspw(ae1, ae2, dataset)
+time_03, real_03, imag_03, phase_03, flags_03 = get_baseline_data_allspw(ae1, ae2, dataset)
+freq_03 = get_emerlin_freqs('all')
 
 # -----------------------------------------------------------------
 # start plotting:
